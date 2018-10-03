@@ -52,7 +52,7 @@ always@(posedge clk or negedge reset) begin
 			end
 			if (shift == 1'b1 && load_r == 1'b1) 
 				index_r <= index_r + 1'b1;
-			if (index_r == (WORD_LENGTH*2)-1)
+			if (index_r == ((WORD_LENGTH*2)-1))
 				index_r <= 1'b0;
  				
 		end

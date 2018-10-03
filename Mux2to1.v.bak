@@ -1,0 +1,24 @@
+module Mux2to1
+(
+	// Input Ports
+	input Selector,
+	input Data_0,
+	input Data_1,
+	
+	// Output Ports
+	output Mux_Output
+
+);
+
+reg Mux_logic;
+
+always@(Selector,Data_0 or Data_1) begin
+	if(Selector == 1'b1)
+		Mux_logic = Data_0;
+	else
+		Mux_logic = Data_1;
+end
+
+assign Mux_Output = Mux_logic;
+
+endmodule
