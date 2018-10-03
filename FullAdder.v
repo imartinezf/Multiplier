@@ -2,12 +2,17 @@
 * Name:
 *	FullAdder.v
 * Description:
-* Shift Register entra numero paralelo sale serial
+* FullAdder
 * 
 * Inputs:
-*	clk: Input Clock 50000000  
+*	clk: Input Clock 
+*	reset: Reset Signal 
+*	data_in_a: Input Data A
+*	data_in_b: Input Data B
+*	cin: Carry In
 * Outputs:
-*  flag: Clk out with 50% duty cycle
+*	data_out: Output Data
+*	cout: Carry Out
 * Version:  
 *	1.0
 * Author: 
