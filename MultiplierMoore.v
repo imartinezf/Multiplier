@@ -5,11 +5,18 @@
 * Moore State Machine
 * 
 * Inputs:
-*	clk: Input Clock
-*	Reset: 
-*	  
+*	clk: clock de entrada
+*	Reset: Reset de entrada 
+*	Start,
+*	Reset_Sync,
+*	flag
 * Outputs:
-*  flag: 
+*	load, load data into shift registers
+*	shift, shift data in shift registers
+*	sync_reset:	reset register
+*	ready:	bandera de ready
+*	enable: enable para el counter 
+*	reset_out
 * Version:  
 *	1.0
 * Author: 
@@ -31,10 +38,8 @@ module MultiplierMoore
 	input clk,
 	input reset,
 	input Start,
-	input FinishLoad,
-	input FinishShift,
-	input Finish,
 	input Reset_Sync,
+	input flag,
 
 	// Output Ports
 	output load, //load data into shift registers
@@ -48,6 +53,7 @@ module MultiplierMoore
 
 reg [2:0] state; 
 
+reg flag_r;
 reg load_r;
 reg shift_r;
 reg sync_reset_r;
@@ -70,25 +76,22 @@ always@(posedge clk or negedge reset ) begin
 				else
 					state <= IDLE;					
 			LOAD:
-				if (FinishLoad == 1'b1)
 					state <= SHIFT;
-				else 
-					state <= LOAD;	
+					
 			SHIFT:
-				if(FinishShift == 1'b1)
+				if(flag == 1'b1)
 					state <= FINISH;
 				else
 					state <= SHIFT;
 			FINISH:
-				if (Finish == 1'b1)
+				
 					state <= SYNC_RESET;
-				else
-					state <= FINISH;	
+				
 			SYNC_RESET:
 				if (Reset_Sync == 1'b1)
 					state <= IDLE;
 				else
-					state <= SYNC_RESET;	
+					state <= IDLE;//SYNC_RESET;	
 						
 			default:
 					state <= IDLE;
@@ -97,7 +100,7 @@ always@(posedge clk or negedge reset ) begin
 end//end always
 /*------------------------------------------------------------------------------------------*/
 
-always@(state)begin
+always@(state) begin
 	 case(state)
 		IDLE: 
 			begin
@@ -105,7 +108,6 @@ always@(state)begin
 				shift_r = 1'b0;
 				sync_reset_r = 1'b0;
 				enable_r = 1'b0;
-				//start_r = 1'b0;
 				ready_r = 1'b0;
 				reset_out_r = 1'b0;
 			end
@@ -115,7 +117,6 @@ always@(state)begin
 				shift_r = 1'b0;
 				sync_reset_r = 1'b1;
 				enable_r = 1'b1;
-				//start_r = 1'b0;
 				ready_r = 1'b0;
 				reset_out_r = 1'b1;
 			end
@@ -125,8 +126,7 @@ always@(state)begin
 				load_r = 1'b0;
 				shift_r = 1'b1;
 				sync_reset_r = 1'b1;
-				enable_r = 1'b1;
-				//start_r = 1'b0;
+				enable_r = 1'b0;
 				ready_r = 1'b0;
 				reset_out_r = 1'b1;
 			end
@@ -135,8 +135,7 @@ always@(state)begin
 				load_r = 1'b0;
 				shift_r = 1'b0;
 				sync_reset_r = 1'b1;
-				enable_r = 1'b1;
-				//start_r = 1'b0;
+				enable_r = 1'b0;
 				ready_r = 1'b1;
 				reset_out_r = 1'b1;
 			end
@@ -145,19 +144,17 @@ always@(state)begin
 				load_r = 1'b0;
 				shift_r = 1'b0;
 				sync_reset_r = 1'b0;
-				enable_r = 1'b1;
-				//start_r = 1'b0;
-				ready_r = 1'b0;
-				reset_out_r = 1'b0;
+				enable_r = 1'b0;
+				ready_r = 1'b1;
+				reset_out_r = 1'b1;
 			end
 	default: 		
 			begin
 				load_r = 1'b0;
 				shift_r = 1'b0;
 				sync_reset_r = 1'b0;
-				enable_r = 1'b1;
-				//start_r = 1'b0;
-				ready_r = 1'b0;
+				enable_r = 1'b0;
+				ready_r = 1'b1;
 				reset_out_r = 1'b1;
 			end
 
@@ -169,7 +166,6 @@ end
 assign load = load_r; 
 assign shift = shift_r;
 assign sync_reset = sync_reset_r;
-//assign start = start_r;
 assign ready = ready_r;
 assign enable = enable_r;
 assign reset_out = reset_out_r;

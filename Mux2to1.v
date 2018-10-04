@@ -1,4 +1,4 @@
-/*********************** 
+	/*********************** 
 * Name:
 *	Mux2to1.v
 * Description:
@@ -28,6 +28,7 @@ module Mux2to1
 	input Selector,
 	input [WORD-1 : 0] Data_0,
 	input [WORD-1 : 0] Data_1,
+	input flag,
 	
 	// Output Ports
 	output [WORD-1 : 0] Mux_Output
@@ -37,10 +38,11 @@ module Mux2to1
 reg [WORD-1 : 0] Mux_logic;
 
 always@(Selector,Data_0 or Data_1) begin
+	
 	if(Selector == 1'b1)
 		Mux_logic = Data_0;
 	else
-		Mux_logic = Data_1;
+		Mux_logic = Data_1; 
 end
 
 assign Mux_Output = Mux_logic;

@@ -5,12 +5,20 @@
 * Shift Register entra numero paralelo sale serial
 * 
 * Inputs:
-*	clk: Input Clock 50000000  
+*	clk: Input Clock 
+*	reset: Señal de entrada de reset
+*	serialInput: Entrada Serial
+*	load: Load data
+*	shift: Shift data
+*	parallelInput: Entrada Paralela
 * Outputs:
-*  flag: Clk out with 50% duty cycle
+*	serialOutput: Salida de dato serial
+*	parallelOutput: Salida de dato paralelo
 * Version:  
 *	1.0
 * Author: 
+*	José Luis Pizano Escalante
+* Modificacion:
 *	Ivan Martinez Flores & Jorge Araiza Martinez 
 * Fecha: 
 *	26/09/2018
@@ -18,45 +26,43 @@
 module ShiftRegisterRight
 #(
 	parameter WORD_LENGTH = 4
+	
 )
-( 
-
+(
 	input clk,
 	input reset,
-	input [WORD_LENGTH-1 : 0] data_in,
-	input shift,
+	input serialInput,
 	input load,
-	
-	//input ready,
-	//input sync_ready,
-	//input flag,
-	//input start,
+	input shift,
+	input [WORD_LENGTH - 1 : 0] parallelInput,
 		
-	output data_out
-	//output enable
+	output serialOutput,
+	output [WORD_LENGTH - 1 : 0] parallelOutput
+	
+
 );
 
-reg load_r;
-reg [WORD_LENGTH-1:0] index_r;
-reg [(WORD_LENGTH*2)-1 : 0] data_out_r;
+reg [WORD_LENGTH - 1 : 0] shiftRegister_logic;
 
-always@(posedge clk or negedge reset) begin
-		if(reset == 1'b0) begin
-			data_out_r <= 1'b0;
-			load_r <= 1'b0;
-			index_r <= 1'b0;
-		end else begin 
-			if (load == 1'b1 /*&& load_r == 1'b0*/) begin
-				data_out_r <= {{WORD_LENGTH{1'b0}},data_in};
-				load_r <= 1'b1;
-			end
-			if (shift == 1'b1 && load_r == 1'b1) 
-				index_r <= index_r + 1'b1;
-			if (index_r == ((WORD_LENGTH*2)-1))
-				index_r <= 1'b0;
- 				
-		end
-	end
+
+always@(posedge clk, negedge reset) begin
 	
-	assign data_out = data_out_r[index_r];
-endmodule 
+	if(reset == 1'b0)
+		shiftRegister_logic <= {WORD_LENGTH{1'b0}};
+	else
+		case ({load, shift})
+			2'b01:
+				shiftRegister_logic <= {serialInput,shiftRegister_logic[WORD_LENGTH -1 : 1]};
+			2'b10:
+				shiftRegister_logic <= parallelInput;
+			default:
+				shiftRegister_logic <= shiftRegister_logic;
+		endcase
+end
+
+
+assign serialOutput = shiftRegister_logic[0]; 
+assign parallelOutput = shiftRegister_logic;
+
+
+endmodule

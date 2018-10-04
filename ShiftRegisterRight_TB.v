@@ -4,14 +4,17 @@ module ShiftRegisterRight_TB;
 
 
 parameter WORD_LENGTH = 2;
+parameter WORD = WORD_LENGTH*2;
 
 reg clk_tb = 0;
 reg reset_tb;
-reg [WORD_LENGTH-1:0] data_in_tb = 0;
+reg [WORD_LENGTH-1:0] parallelInput_tb = 0;
+reg serialInput_tb;
 reg load_tb;
 reg shift_tb;
 
-wire data_out_tb;
+wire serialOutput_tb;
+wire [WORD - 1 : 0] parallelOutput_tb;
 
 ShiftRegisterRight
 #(
@@ -19,12 +22,15 @@ ShiftRegisterRight
 )
 DUT
 (
+
 	.clk(clk_tb),
 	.reset(reset_tb),
-	.data_in(data_in_tb),
+	.parallelInput(parallelInput_tb),
+	.serialInput(serialInput_tb),
 	.load(load_tb),
 	.shift(shift_tb),
-	.data_out(data_out_tb)
+	.serialOutput(serialOutput_tb),
+	.parallelOutput(parallelOutput_tb)
 
 );
 
@@ -62,8 +68,9 @@ initial begin // shift generator
 end
 /*********************************************************/
 initial begin // data
-   #0 data_in_tb = 1;
-   #20 data_in_tb = 1;
+   #0 parallelInput_tb = 1;
+   #20 parallelInput_tb = 1;
+	#0 serialInput_tb = 0;
    
 end
 

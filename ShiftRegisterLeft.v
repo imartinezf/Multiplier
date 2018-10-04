@@ -1,6 +1,32 @@
+/*********************** 
+* Name:
+*	ShiftRegisterLeft.v
+* Description:
+* Shift Register entra numero paralelo sale serial
+* 
+* Inputs:
+*	clk: Input Clock 
+*	reset: Señal de entrada de reset
+*	serialInput: Entrada Serial
+*	load: Load data
+*	shift: Shift data
+*	parallelInput: Entrada Paralela
+* Outputs:
+*	serialOutput: Salida de dato serial
+*	parallelOutput: Salida de dato paralelo
+* Version:  
+*	1.0
+* Author: 
+*	José Luis Pizano Escalante
+* Modificacion:
+*	Ivan Martinez Flores & Jorge Araiza Martinez 
+* Fecha: 
+*	26/09/2018
+***********************/
+
 module ShiftRegisterLeft
 #(
-	parameter WORD_LENGTH = 8,
+	parameter WORD_LENGTH = 4,
 	parameter WORD = WORD_LENGTH*2
 )
 (

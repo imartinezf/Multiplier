@@ -1,6 +1,6 @@
  /******************************************************************* 
 * Name:
-*	RegisterWithEnable.v
+*	Register_Sync_Reset.v
 * Description:
 * 	This module is a register with eanble.
 * Inputs:
@@ -32,6 +32,7 @@
 	input enable,
 	input Sync_Reset,
 	input [WORD-1 : 0] Data_Input,
+	input flag,
 
 	// Output Ports
 	output [WORD-1 : 0] Data_Output
@@ -43,11 +44,13 @@ always@(posedge clk or negedge reset) begin
 	if(reset == 1'b0) 
 		data_r <= 0;
 	else 
-		if(enable == 1'b1)
+		if(enable == 1'b1) begin
+			data_r <= data_r;
 			if(Sync_Reset == 1'b0)
 				data_r <= {WORD_LENGTH{1'b0}};
 			else
 				data_r <= Data_Input;
+		end
 end
 
 assign Data_Output = data_r;
